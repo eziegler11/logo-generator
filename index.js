@@ -34,17 +34,53 @@ function writeToFile(fileName, data) {
 	);
 }
 
+class Triangle {
+    constructor (color) {
+        this.color = color;
+    }
+    setColor(color) {
+        this.color = color;
+    }
+    render () {
+        return `<polygon points="150, 18 244, 182 56, 182" fill="${this.color}"/>`
+    }
+}
+
+// move triangle into triangle.js file
+// connect triangle to Shape class
+
+
 // Initializes the app when run in the command line and produces the content of the ReadMe
 function init() {
 	inquirer.prompt(questions).then((response) => {
 		console.log(response);
+        function getShapeHTML(){
+            let shape;
+            switch (response.shape) {
+                case "circle":
+                    // shape = new Circle();
+                    break;
+                    // return `<circle cx="150" cy="115" r="80" fill="${response.shapeColor}"/>`
+                case "triangle":
+                    shape = new Triangle(response.shapeColor);
+                    break;
+                    // return `<polygon points="150, 18 244, 182 56, 182" fill="${response.shapeColor}"/>`
+                case "square":
+                    // shape = new Square();
+                    break;
+                    // return `<rect x="75" y="35" width="150" height="150" fill="${response.shapeColor}"/>`
+            } // Switch Ends
+            console.log(shape)
+            const html = shape.render();
+            return html;
+        } // getShapeHTML ends
 		const logo = `<svg version="1.1"
         width="300" height="200"
         xmlns="http://www.w3.org/2000/svg">
    
-     <circle cx="150" cy="100" r="80" fill="${response.shapeColor}"/>
+     ${getShapeHTML ()}
    
-     <text x="150" y="125" font-size="60" text-anchor="middle" fill="${response.textColor}">${response.text}</text>
+     <text x="150" y="130" font-size="50" text-anchor="middle" fill="${response.textColor}">${response.text}</text>
    
    </svg>`;
 
