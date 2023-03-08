@@ -1,13 +1,25 @@
 // Required dependencies
 const inquirer = require('./node_modules/inquirer');
 const fs = require('fs');
+const { Triangle, Square, Circle } = require('./lib/shapes')
 
 // Array of prompts to generate logo
 const questions = [
 	{
-		type: 'input', // needs to be up to only 3 characters max
+		type: 'input',
 		message: 'What letters do you want in your logo?',
 		name: 'text',
+        // function to limit input to 3 characters
+        validate: function (input) {
+            const done = this.async();
+            if (input.length === 3) {
+                done(null, true);
+                return true;
+            } else {
+                done('Must have 3 characters');
+                return false
+            };
+        }
 	},
 	{
 		type: 'input',
@@ -34,43 +46,22 @@ function writeToFile(fileName, data) {
 	);
 }
 
-class Triangle {
-    constructor (color) {
-        this.color = color;
-    }
-    setColor(color) {
-        this.color = color;
-    }
-    render () {
-        return `<polygon points="150, 18 244, 182 56, 182" fill="${this.color}"/>`
-    }
-}
-
-// move triangle into triangle.js file
-// connect triangle to Shape class
-
-
-// Initializes the app when run in the command line and produces the content of the ReadMe
+// Initializes the app when run in the command line
 function init() {
 	inquirer.prompt(questions).then((response) => {
-		console.log(response);
         function getShapeHTML(){
             let shape;
             switch (response.shape) {
                 case "circle":
-                    // shape = new Circle();
+                    shape = new Circle(response.shapeColor);
                     break;
-                    // return `<circle cx="150" cy="115" r="80" fill="${response.shapeColor}"/>`
                 case "triangle":
                     shape = new Triangle(response.shapeColor);
                     break;
-                    // return `<polygon points="150, 18 244, 182 56, 182" fill="${response.shapeColor}"/>`
                 case "square":
-                    // shape = new Square();
+                    shape = new Square(response.shapeColor);
                     break;
-                    // return `<rect x="75" y="35" width="150" height="150" fill="${response.shapeColor}"/>`
             } // Switch Ends
-            console.log(shape)
             const html = shape.render();
             return html;
         } // getShapeHTML ends
@@ -80,7 +71,7 @@ function init() {
    
      ${getShapeHTML ()}
    
-     <text x="150" y="130" font-size="50" text-anchor="middle" fill="${response.textColor}">${response.text}</text>
+     <text x="150" y="145" font-size="50" text-anchor="middle" fill="${response.textColor}">${response.text}</text>
    
    </svg>`;
 
